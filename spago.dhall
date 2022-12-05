@@ -13,6 +13,7 @@ to generate this file without the comments in this block.
 { name = "my-project"
 , dependencies =
   [ "aff"
+  , "arrays"
   , "console"
   , "effect"
   , "foldable-traversable"
@@ -20,6 +21,7 @@ to generate this file without the comments in this block.
   , "maybe"
   , "node-buffer"
   , "node-fs-aff"
+  , "point-free"
   , "prelude"
   , "quickcheck"
   , "spec"
