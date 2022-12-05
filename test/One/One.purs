@@ -3,7 +3,7 @@ module Test.AdventOfCode.Twenty22.One
   ) where
 
 import Prelude
-import AdventOfCode.Twenty21.One
+import AdventOfCode.Twenty22.One
 import Data.String (split)
 import Data.String.Pattern (Pattern(..))
 import Effect (Effect)
@@ -18,6 +18,49 @@ import Test.Spec.Runner (runSpec)
 main :: Effect Unit
 main = launchAff_ $ runSpec [ consoleReporter ] do
   describe "Day One" do
-    pending "parse input"
-    pending "other stuff"
+    it "Splits double-spaced lists" do
+      splitElves testIn `shouldEqual` testSplit
+    it "Parses a list of lists of numbers" do
+      parseInput testIn `shouldEqual` testParsed
+    it "Finds the largest-summed sublist" do
+      solve1 testIn `shouldEqual` 24000
 
+testIn :: String
+testIn =
+  """1000
+2000
+3000
+
+4000
+
+5000
+6000
+
+7000
+8000
+9000
+
+10000"""
+
+testSplit :: Array (String)
+testSplit =
+  [ """1000
+2000
+3000"""
+  , """4000"""
+  , """5000
+6000"""
+  , """7000
+8000
+9000"""
+  , """10000"""
+  ]
+
+testParsed :: Array (Array Int)
+testParsed =
+  [ [ 1000, 2000, 3000 ]
+  , [ 4000 ]
+  , [ 5000, 6000 ]
+  , [ 7000, 8000, 9000 ]
+  , [ 10000 ]
+  ]
