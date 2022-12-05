@@ -3,7 +3,7 @@ module Test.AdventOfCode.Twenty22.$DAY
   ) where
 
 import Prelude
-import AdventOfCode.Twenty21.$DAY
+import AdventOfCode.Twenty22.$DAY
 import Data.String (split)
 import Data.String.Pattern (Pattern(..))
 import Effect (Effect)

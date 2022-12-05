@@ -2,4 +2,4 @@
 
 # usage, e.g.:
 # > ./tst Four
-spago test -m Test.AdventOfCode.Twenty21.$1
+spago test -m Test.AdventOfCode.Twenty22.$1

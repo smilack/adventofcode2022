@@ -2,4 +2,4 @@
 
 # usage, e.g.:
 # > ./run Four
-spago run -m AdventOfCode.Twenty21.$1
+spago run -m AdventOfCode.Twenty22.$1
