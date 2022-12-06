@@ -22,6 +22,11 @@ main = launchAff_ do
     -- logShow $ parseInput input
     log "Score:"
     logShow $ solve1 input
+    log "Part Two:"
+    -- log "Input:"
+    -- logShow $ parseInput2 input
+    log "Score:"
+    logShow $ solve2 input
 
 solve1 :: String -> Int
 solve1 =
@@ -31,18 +36,18 @@ solve1 =
 
 score :: Round -> Int
 score round@{ you } = outcomeScore round + choiceScore you
+  where
+  outcomeScore :: Round -> Int
+  outcomeScore { opponent, you }
+    | you `beats` opponent = 6
+    | you `eq` opponent = 3
+    | otherwise = 0
 
 choiceScore :: RPS -> Int
 choiceScore = case _ of
   Rock -> 1
   Paper -> 2
   Scissors -> 3
-
-outcomeScore :: Round -> Int
-outcomeScore { opponent, you }
-  | you `beats` opponent = 6
-  | you `eq` opponent = 3
-  | otherwise = 0
 
 beats :: RPS -> RPS -> Boolean
 beats Rock Scissors = true
@@ -69,11 +74,59 @@ parseInput =
   toRound [ o, y ] = { opponent: toRPS o, you: toRPS y }
   toRound _ = { opponent: Rock, you: Rock }
 
-  toRPS :: String -> RPS
-  toRPS "A" = Rock
-  toRPS "B" = Paper
-  toRPS "C" = Scissors
-  toRPS "X" = Rock
-  toRPS "Y" = Paper
-  toRPS "Z" = Scissors
-  toRPS _ = Rock
+toRPS :: String -> RPS
+toRPS "A" = Rock
+toRPS "B" = Paper
+toRPS "C" = Scissors
+toRPS "X" = Rock
+toRPS "Y" = Paper
+toRPS "Z" = Scissors
+toRPS _ = Rock
+
+data Outcome = Win | Loss | Draw
+
+derive instance eqOutcome :: Eq Outcome
+derive instance genericOutcome :: Generic Outcome _
+instance showOutcome :: Show Outcome where
+  show = genericShow
+
+toOutcome :: String -> Outcome
+toOutcome "X" = Loss
+toOutcome "Y" = Draw
+toOutcome "Z" = Win
+toOutcome _ = Win
+
+type Round2 = { opponent :: RPS, outcome :: Outcome }
+
+parseInput2 :: String -> Array Round2
+parseInput2 =
+  map toRound2
+    <<< map (split (Pattern " "))
+    <<< split (Pattern "\n")
+
+  where
+  toRound2 :: Array String -> Round2
+  toRound2 [ op, ou ] = { opponent: toRPS op, outcome: toOutcome ou }
+  toRound2 _ = { opponent: Rock, outcome: Win }
+
+solve2 :: String -> Int
+solve2 =
+  sum
+    <<< map score2
+    <<< parseInput2
+
+score2 :: Round2 -> Int
+score2 { opponent, outcome } =
+  outcomeScore outcome + choiceScore (playerChoice opponent outcome)
+  where
+  outcomeScore Win = 6
+  outcomeScore Draw = 3
+  outcomeScore Loss = 0
+
+  playerChoice o Draw = o
+  playerChoice Rock Win = Paper
+  playerChoice Rock Loss = Scissors
+  playerChoice Paper Win = Scissors
+  playerChoice Paper Loss = Rock
+  playerChoice Scissors Win = Rock
+  playerChoice Scissors Loss = Paper
