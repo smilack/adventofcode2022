@@ -27,6 +27,7 @@ to generate this file without the comments in this block.
   , "spec"
   , "spec-quickcheck"
   , "strings"
+  , "unicode"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
