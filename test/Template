@@ -18,6 +18,8 @@ import Test.Spec.Runner (runSpec)
 main :: Effect Unit
 main = launchAff_ $ runSpec [ consoleReporter ] do
   describe "Day $DAY" do
-    pending "parse input"
-    pending "other stuff"
-
+    describe "Part 1" do
+      pending "parse input"
+      pending "other stuff"
+    describe "Part 2" do
+      pending "more stuff"
