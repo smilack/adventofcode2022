@@ -13,4 +13,10 @@ import Node.FS.Aff (readTextFile)
 main :: Effect Unit
 main = launchAff_ do
   input <- readTextFile UTF8 "./src/$DAY/input"
-  liftEffect $ log input
+  liftEffect do
+    log "Part 1:"
+    -- log ""
+    -- logShow $ solve1 input
+    log "Part2:"
+    -- log ""
+    -- logShow $ solve2 input
