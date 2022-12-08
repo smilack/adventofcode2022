@@ -18,6 +18,7 @@ import Effect.Class (liftEffect)
 import Effect.Console (log, logShow)
 import Node.Encoding (Encoding(..))
 import Node.FS.Aff (readTextFile)
+import Partial.Unsafe (unsafePartial)
 
 main :: Effect Unit
 main = launchAff_ do
@@ -52,16 +53,14 @@ parseInput :: String -> Array (Vec D2 Range)
 parseInput = split (Pattern "\n") >>> map mkPairs
   where
   mkPairs :: String -> Vec D2 Range
-  mkPairs = split (Pattern ",") >>> mkVec >>> map parseRange
+  mkPairs = split (Pattern ",") >>> unsafePartial mkVec >>> map parseRange
 
-  mkVec :: Array String -> Vec D2 String
+  mkVec :: Partial => Array String -> Vec D2 String
   mkVec [ a, b ] = vec2 a b
-  mkVec _ = vec2 "" ""
 
   parseRange :: String -> Range
-  parseRange = split (Pattern "-") >>> map fromString >>> toRange
+  parseRange = split (Pattern "-") >>> map fromString >>> unsafePartial toRange
 
-  toRange :: Array (Maybe Int) -> Range
+  toRange :: Partial => Array (Maybe Int) -> Range
   toRange [ Just a, Just b ] = mkRange a b
-  toRange _ = mkRange 0 0
 
