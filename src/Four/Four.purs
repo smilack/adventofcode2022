@@ -1,8 +1,17 @@
 module AdventOfCode.Twenty22.Four where
 
 import Prelude
+import AdventOfCode.Twenty22.Four.Range (Range, fullOverlap, mkRange)
+import Data.Enum (fromEnum)
+import Data.Foldable (foldMap)
+import Data.Int (fromString)
+import Data.Maybe (Maybe(..), fromMaybe)
+import Data.Monoid.Additive (Additive(..))
+import Data.Newtype (wrap, unwrap)
 import Data.String (split)
 import Data.String.Pattern (Pattern(..))
+import Data.Typelevel.Num (d0, d1, D2)
+import Data.Vec ((!!), vec2, Vec)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)
@@ -15,8 +24,39 @@ main = launchAff_ do
   input <- readTextFile UTF8 "./src/Four/input"
   liftEffect do
     log "Part 1:"
-    -- log ""
-    -- logShow $ solve1 input
+    log "Number of pairs with fully overlapping range"
+    logShow $ solve1 input
     log "Part2:"
-    -- log ""
-    -- logShow $ solve2 input
+
+-- log ""
+-- logShow $ solve2 input
+
+solve1 :: String -> Int
+solve1 =
+  parseInput
+    >>> foldMap (boolToAdditive <<< pairOverlaps)
+    >>> unwrap
+
+boolToAdditive :: Boolean -> Additive Int
+boolToAdditive = fromEnum >>> wrap
+
+pairOverlaps :: Vec D2 Range -> Boolean
+pairOverlaps v = fullOverlap (v !! d0) (v !! d1)
+
+parseInput :: String -> Array (Vec D2 Range)
+parseInput = split (Pattern "\n") >>> map mkPairs
+  where
+  mkPairs :: String -> Vec D2 Range
+  mkPairs = split (Pattern ",") >>> mkVec >>> map parseRange
+
+  mkVec :: Array String -> Vec D2 String
+  mkVec [ a, b ] = vec2 a b
+  mkVec _ = vec2 "" ""
+
+  parseRange :: String -> Range
+  parseRange = split (Pattern "-") >>> map fromString >>> toRange
+
+  toRange :: Array (Maybe Int) -> Range
+  toRange [ Just a, Just b ] = mkRange a b
+  toRange _ = mkRange 0 0
+
