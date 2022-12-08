@@ -15,7 +15,7 @@ data Stack a = Stack (List a)
 _show :: List String -> String
 _show Nil = "(empty)"
 _show (a : Nil) = a
-_show (a : as) = a <> "->" <> _show as
+_show (a : as) = a <> _show as
 
 instance Show (Stack String) where
   show (Stack a) = _show a
