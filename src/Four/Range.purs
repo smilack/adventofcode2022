@@ -2,6 +2,7 @@ module AdventOfCode.Twenty22.Four.Range
   ( Range
   , mkRange
   , fullOverlap
+  , partialOverlap
   ) where
 
 import Prelude
@@ -30,3 +31,10 @@ high (Range _ b) = b
 
 fullOverlap :: Range -> Range -> Boolean
 fullOverlap a b = a `subrangeOf` b || b `subrangeOf` a
+
+partialOverlap :: Range -> Range -> Boolean
+partialOverlap a b =
+  (high a >= low b && high a <= high b)
+    || (low a >= low b && low a <= high b)
+    || (high b >= low a && high b <= high a)
+    || (low b >= low a && low b <= high a)

@@ -1,12 +1,12 @@
 module AdventOfCode.Twenty22.Four where
 
 import Prelude
-import AdventOfCode.Twenty22.Four.Range (Range, fullOverlap, mkRange)
+import AdventOfCode.Twenty22.Four.Range (Range, partialOverlap, fullOverlap, mkRange)
 import Data.Enum (fromEnum)
 import Data.Foldable (foldMap)
 import Data.Int (fromString)
-import Data.Maybe (Maybe(..), fromMaybe)
-import Data.Monoid.Additive (Additive(..))
+import Data.Maybe (Maybe(..))
+import Data.Monoid.Additive (Additive)
 import Data.Newtype (wrap, unwrap)
 import Data.String (split)
 import Data.String.Pattern (Pattern(..))
@@ -27,21 +27,26 @@ main = launchAff_ do
     log "Number of pairs with fully overlapping range"
     logShow $ solve1 input
     log "Part2:"
+    log "Number of pairs with partially overlapping range"
+    logShow $ solve2 input
 
--- log ""
--- logShow $ solve2 input
+solve :: (Range -> Range -> Boolean) -> String -> Int
+solve overlapFn =
+  parseInput
+    >>> foldMap (boolToAdditive <<< pairOverlaps overlapFn)
+    >>> unwrap
+
+solve2 :: String -> Int
+solve2 = solve partialOverlap
 
 solve1 :: String -> Int
-solve1 =
-  parseInput
-    >>> foldMap (boolToAdditive <<< pairOverlaps)
-    >>> unwrap
+solve1 = solve fullOverlap
 
 boolToAdditive :: Boolean -> Additive Int
 boolToAdditive = fromEnum >>> wrap
 
-pairOverlaps :: Vec D2 Range -> Boolean
-pairOverlaps v = fullOverlap (v !! d0) (v !! d1)
+pairOverlaps :: (Range -> Range -> Boolean) -> Vec D2 Range -> Boolean
+pairOverlaps fn v = fn (v !! d0) (v !! d1)
 
 parseInput :: String -> Array (Vec D2 Range)
 parseInput = split (Pattern "\n") >>> map mkPairs
