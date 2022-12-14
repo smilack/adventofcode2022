@@ -5,6 +5,7 @@ module Test.AdventOfCode.Twenty22.Five
 import Prelude
 import AdventOfCode.Twenty22.Five
 import AdventOfCode.Twenty22.Five.Stack (Stack, push, pop, peek, empty)
+import Data.List (List(..), fromFoldable)
 import Data.String (split, joinWith)
 import Data.String.Pattern (Pattern(..))
 import Effect (Effect)
@@ -23,9 +24,23 @@ main = launchAff_ $ runSpec [ consoleReporter ] do
       describe "Parse input" do
         it "Initialize stacks" do
           initializeStacks testIn `shouldEqual` startingStacks
+        it "Extracts line with stack numbers" do
+          (stackCountLine $ _.init $ splitInput testIn)
+            `shouldEqual`
+              " 1   2   3 "
         it "Reads instructions" do
           readInstructions testIn `shouldEqual` testInstructions
-      pending "other stuff"
+        it "Reads stack state" do
+          readState startingStacks `shouldEqual` "NDP"
+        it "Executes one instruction" do
+          let
+            s = startingStacks
+            i = Instruction { move: 1, source: 1, dest: 0 }
+          execute s (Cons i Nil) `shouldEqual` "DCP"
+        it "Executes instructions" do
+          execute startingStacks testInstructions `shouldEqual` "CMZ"
+        it "Solves challenge" do
+          solve testIn `shouldEqual` "CMZ"
     describe "Part 2" do
       pending "more stuff"
 
@@ -49,10 +64,10 @@ startingStacks =
   , push "P" empty
   ]
 
-testInstructions :: Array Instruction
-testInstructions =
-  [ Instruction { move: 1, source: 2, dest: 1 }
-  , Instruction { move: 3, source: 1, dest: 3 }
-  , Instruction { move: 2, source: 2, dest: 1 }
-  , Instruction { move: 1, source: 1, dest: 2 }
+testInstructions :: List Instruction
+testInstructions = fromFoldable
+  [ Instruction { move: 1, source: 1, dest: 0 }
+  , Instruction { move: 3, source: 0, dest: 2 }
+  , Instruction { move: 2, source: 1, dest: 0 }
+  , Instruction { move: 1, source: 0, dest: 1 }
   ]
